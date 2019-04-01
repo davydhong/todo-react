@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./styles.css";
-import { TodoList } from "./TodoList";
+import TodoList from "./TodoList";
 import { FilterSelection, filteredTodos } from "./FilterSelection";
 
 export class TodoEntryNode {
@@ -17,7 +16,11 @@ export class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      todos: [new TodoEntryNode("first todo", 0)],
+      todos: [
+        new TodoEntryNode("Submit Deliverr Tech Challenge", 0),
+        new TodoEntryNode("Deliverr Onsite", 1),
+        new TodoEntryNode("Get the job", 2)
+      ],
       filter: "notDeleted" //options:  notDeleted (default), complete(&& notDeleted), deleted
     };
     this.handleAddTodo = this.handleAddTodo.bind(this);
@@ -46,8 +49,18 @@ export class App extends React.Component {
   handleIconClick(e) {
     e.persist();
     // getting index and the prop (isComplete/isDeleted) of the entry node
-    const entryIndex = e.target.parentNode.getAttribute("idx");
-    const entryProp = e.target.getAttribute("name");
+    // checkbox and the svg icon has different DOM structure
+    const entryIndex =
+      e.target.tagName === "INPUT"
+        ? e.target.parentNode.getAttribute("idx")
+        : e.target.parentNode.parentNode.getAttribute("idx") ||
+          e.target.parentNode.parentNode.parentNode.getAttribute("idx");
+    const entryProp =
+      e.target.tagName === "INPUT"
+        ? e.target.getAttribute("name")
+        : e.target.parentNode.getAttribute("name") ||
+          e.target.parentNode.parentNode.getAttribute("name");
+
     const updatedTodos = [...this.state.todos];
     updatedTodos[entryIndex][entryProp] = !updatedTodos[entryIndex][entryProp];
     this.setState({
@@ -69,12 +82,10 @@ export class App extends React.Component {
         <br />
         <br />
         <input type="text" id="inputTask" onKeyPress={this.handleAddTodo} />
-        <ul style={{ listStyle: "none" }}>
-          <TodoList
-            todos={filteredTodos(this.state.todos, this.state.filter)}
-            handleIconClick={this.handleIconClick}
-          />
-        </ul>
+        <TodoList
+          todos={filteredTodos(this.state.todos, this.state.filter)}
+          handleIconClick={this.handleIconClick}
+        />
       </div>
     );
   }

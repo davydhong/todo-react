@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export function filteredTodos(todos, filter) {
   return todos.filter(todo => {
