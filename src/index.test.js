@@ -1,93 +1,85 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import TodoList from './TodoList';
+import { App, TodoEntryNode } from './index';
 import { FilterSelection, filteredTodos } from './FilterSelection';
+import { TodoList } from './TodoList';
+import { shallow, mount } from 'enzyme';
 
-export class TodoEntryNode {
-  constructor(task, id) {
-    this.task = task;
-    this.id = id;
-    this.isComplete = false;
-    this.isDeleted = false;
-  }
-}
+describe('<App/>', () => {
+  it('the state starts with three todo entries', () => {
+    const wrapper = shallow(<App />);
+    const state = wrapper.state();
+    expect(state.todos[0]).toBeInstanceOf(TodoEntryNode);
+    expect(state.todos).toHaveLength(3);
+    expect(state.filter).toBe('notDeleted');
+  });
 
-export class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      todos: [
-        new TodoEntryNode('Submit Deliverr Tech Challenge', 0),
-        new TodoEntryNode('Deliverr Onsite', 1),
-        new TodoEntryNode('Get the job', 2)
-      ],
-      filter: 'notDeleted' //options:  notDeleted (default), complete(&& notDeleted), deleted
-    };
-    this.handleAddTodo = this.handleAddTodo.bind(this);
-    this.handleIconClick = this.handleIconClick.bind(this);
-    this.handleUpdateFilter = this.handleUpdateFilter.bind(this);
-  }
-
-  handleAddTodo(e) {
-    if (e.key === 'Enter') {
-      e.persist();
-      this.setState(
-        {
-          todos: [
-            ...this.state.todos,
-            new TodoEntryNode(e.target.value, this.state.todos.length)
-          ]
-        },
-        () => {
-          // reset input field after setState
-          e.target.value = '';
-        }
-      );
-    }
-  }
-
-  handleIconClick(e) {
-    // getting index and the prop (isComplete/isDeleted) of the entry node
-    // checkbox and the svg icon has different DOM structure
-    const entryIndex =
-      e.target.tagName === 'INPUT'
-        ? e.target.parentNode.getAttribute('idx')
-        : e.target.parentNode.parentNode.getAttribute('idx') ||
-          e.target.parentNode.parentNode.parentNode.getAttribute('idx');
-    const entryProp =
-      e.target.tagName === 'INPUT'
-        ? e.target.getAttribute('name')
-        : e.target.parentNode.getAttribute('name') ||
-          e.target.parentNode.parentNode.getAttribute('name');
-
-    const updatedTodos = [...this.state.todos];
-    updatedTodos[entryIndex][entryProp] = !updatedTodos[entryIndex][entryProp];
-    this.setState({
-      todos: updatedTodos
-    });
-  }
-
-  handleUpdateFilter(e) {
-    this.setState({
-      filter: e.target.value
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <FilterSelection handleUpdateFilter={this.handleUpdateFilter} />
-        <br />
-        <br />
-        <input type="text" id="inputTask" onKeyPress={this.handleAddTodo} />
-        <TodoList
-          todos={filteredTodos(this.state.todos, this.state.filter)}
-          handleIconClick={this.handleIconClick}
-        />
-      </div>
+  it('renders filter selection and todolist', () => {
+    const wrapper = shallow(<App />);
+    const state = wrapper.state();
+    const listWrapper = shallow(
+      <TodoList
+        todos={filteredTodos(state.todos, state.filter)}
+        handleIconClick={wrapper.handleIconClick}
+      />
     );
-  }
-}
+    expect(wrapper.contains('#inputTask')).toBeTruthy;
+    expect(wrapper.contains(<FilterSelection />)).toBeTruthy;
+    expect(wrapper.contains(<TodoList />)).toBeTruthy;
+    expect(listWrapper.find('.todoEntry')).toHaveLength(3);
+  });
 
-const rootElement = document.getElementById('root');
-ReactDOM.render(<App />, rootElement);
+  it('can add todo entry node to the state', () => {
+    const wrapper = mount(<App />);
+    const textBox = wrapper.find('#inputTask');
+    textBox.simulate('keypress', {
+      persist: () => {},
+      key: 'Enter',
+      target: { value: 'adding fourth task' }
+    });
+    expect(wrapper.state().todos).toHaveLength(4);
+    expect(wrapper.find('li.todoEntry')).toHaveLength(4);
+    textBox.simulate('keypress', {
+      persist: () => {},
+      key: 'Enter',
+      target: { value: 'adding fifth task' }
+    });
+    expect(wrapper.state().todos).toHaveLength(5);
+    expect(wrapper.find('li.todoEntry')).toHaveLength(5);
+    wrapper.unmount();
+  });
+
+  test.skip('can mark entries complete/deleted', () => {
+    // omitted due to mock event object size
+  });
+
+  it('can filter by complete/delete', () => {
+    const wrapper = mount(<App />);
+    const selector = wrapper.find('#FilterSelection');
+    const todos = wrapper.state().todos;
+
+    selector.simulate('change', { target: { value: 'inComplete' } });
+    expect(wrapper.find('li.todoEntry')).toHaveLength(3);
+    selector.simulate('change', { target: { value: 'complete' } });
+    expect(wrapper.find('li.todoEntry')).toHaveLength(0);
+    selector.simulate('change', { target: { value: 'deleted' } });
+    expect(wrapper.find('li.todoEntry')).toHaveLength(0);
+
+    const completeEntry = new TodoEntryNode('this entry is complete', 3);
+    completeEntry.isComplete = true;
+    const deletedEntry = new TodoEntryNode('this entry is deleted', 4);
+    deletedEntry.isDeleted = true;
+
+    wrapper.setState({
+      todos: [...todos, completeEntry, deletedEntry]
+    });
+
+    selector.simulate('change', { target: { value: 'inComplete' } });
+    expect(wrapper.find('li.todoEntry')).toHaveLength(3);
+    selector.simulate('change', { target: { value: 'complete' } });
+    expect(wrapper.find('li.todoEntry')).toHaveLength(1);
+    selector.simulate('change', { target: { value: 'deleted' } });
+    expect(wrapper.find('li.todoEntry')).toHaveLength(1);
+
+    wrapper.unmount();
+  });
+});
