@@ -47,7 +47,6 @@ export class App extends React.Component {
   }
 
   handleIconClick(e) {
-    e.persist();
     // getting index and the prop (isComplete/isDeleted) of the entry node
     // checkbox and the svg icon has different DOM structure
     const entryIndex =
@@ -69,7 +68,6 @@ export class App extends React.Component {
   }
 
   handleUpdateFilter(e) {
-    e.persist();
     this.setState({
       filter: e.target.value
     });

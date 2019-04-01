@@ -1,16 +1,16 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export function filteredTodos(todos, filter) {
   return todos.filter(todo => {
     switch (filter) {
-      case "notDeleted":
+      case 'notDeleted':
         return !todo.isDeleted;
-      case "inComplete":
+      case 'inComplete':
         return !todo.isDeleted && !todo.isComplete;
-      case "complete":
+      case 'complete':
         return !todo.isDeleted && todo.isComplete;
-      case "deleted":
+      case 'deleted':
         return todo.isDeleted;
       default:
         return todo;
@@ -20,7 +20,7 @@ export function filteredTodos(todos, filter) {
 
 export function FilterSelection({ handleUpdateFilter }) {
   return (
-    <select onChange={handleUpdateFilter}>
+    <select id="FilterSelection" onChange={handleUpdateFilter}>
       <option value="notDeleted">Not Deleted (default)</option>
       <option value="inComplete">Incomplete</option>
       <option value="complete">Complete</option>

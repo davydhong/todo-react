@@ -1,15 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import DeleteIcon from "@material-ui/icons/Delete";
-import RefreshIcon from "@material-ui/icons/Refresh";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import DeleteIcon from '@material-ui/icons/Delete';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const styles = theme => ({
   root: {
-    width: "100%",
+    width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper
   }
@@ -41,11 +41,11 @@ completeTask.propTypes = {
 
 export function TodoList({ todos, handleIconClick }) {
   return (
-    <List style={{ listStyle: "none" }}>
+    <List style={{ listStyle: 'none' }}>
       {todos.map((todo, idx) => {
         const TodoRenderer = todo.isComplete ? completeTask : inCompleteTask;
         return (
-          <ListItem key={idx} idx={todo.id}>
+          <ListItem key={idx} idx={todo.id} className="todoEntry">
             <input
               type="checkbox"
               name="isComplete"
@@ -64,8 +64,7 @@ export function TodoList({ todos, handleIconClick }) {
 }
 
 TodoList.propTypes = {
-  todos: PropTypes.array,
-  handleIconClick: PropTypes.function
+  todos: PropTypes.array
 };
 
 export default withStyles(styles)(TodoList);
