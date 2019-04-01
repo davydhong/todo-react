@@ -1,10 +1,12 @@
 {
   "name": "reactjs-todo",
   "version": "1.0.0",
-  "description": "Todo-list app using ReactJS context api",
+  "description": "Todo-list app using ReactJS",
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@material-ui/core": "3.9.3",
+    "prop-types": "15.7.2",
     "react": "16.8.3",
     "react-dom": "16.8.3",
     "react-scripts": "2.1.8"
