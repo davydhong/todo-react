@@ -15,7 +15,6 @@ export function TodoList({ todos, handleIconClick }) {
       <li key={idx} idx={todo.id}>
         <input
           type="checkbox"
-          id="todoIsComplete"
           name="isComplete"
           checked={todo.isComplete}
           onChange={handleIconClick}

@@ -4,7 +4,7 @@ import "./styles.css";
 import { TodoList } from "./TodoList";
 import { FilterSelection, filteredTodos } from "./FilterSelection";
 
-class TodoEntryNode {
+export class TodoEntryNode {
   constructor(task, id) {
     this.task = task;
     this.id = id;
@@ -13,7 +13,7 @@ class TodoEntryNode {
   }
 }
 
-class App extends React.Component {
+export class App extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -36,7 +36,7 @@ class App extends React.Component {
           ]
         },
         () => {
-          // reset input field after enter is pressed
+          // reset input field after setState
           e.target.value = "";
         }
       );
@@ -45,6 +45,7 @@ class App extends React.Component {
 
   handleIconClick(e) {
     e.persist();
+    // getting index and the prop (isComplete/isDeleted) of the entry node
     const entryIndex = e.target.parentNode.getAttribute("idx");
     const entryProp = e.target.getAttribute("name");
     const updatedTodos = [...this.state.todos];

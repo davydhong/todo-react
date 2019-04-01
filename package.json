@@ -6,10 +6,15 @@
   "main": "src/index.js",
   "dependencies": {
     "@material-ui/core": "3.9.3",
+    "enzyme": "3.9.0",
+    "enzyme-adapter-react-16": "1.11.2",
+    "jest": "latest",
+    "jest-enzyme": "7.0.2",
     "prop-types": "15.7.2",
     "react": "16.8.3",
     "react-dom": "16.8.3",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "react-test-renderer": "16.8.6"
   },
   "devDependencies": {
     "typescript": "3.3.3"
